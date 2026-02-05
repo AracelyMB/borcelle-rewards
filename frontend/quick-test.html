@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARY Quick Test</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            font-family: monospace;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .status.show { display: block; }
+        
+        .status.success {
+            background: #e8f5e9;
+            border: 2px solid #4caf50;
+            color: #2e7d32;
+        }
+        
+        .status.error {
+            background: #ffebee;
+            border: 2px solid #f44336;
+            color: #c62828;
+        }
+        
+        .status.loading {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            color: #1565c0;
+        }
+        
+        .details {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .details p {
+            margin: 8px 0;
+            font-size: 0.9rem;
+        }
+        
+        .details strong {
+            color: #333;
+        }
+        
+        .hash {
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 0.85rem;
+            background: rgba(0,0,0,0.05);
+            padding: 5px 8px;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 5px;
+        }
+        
+        .link {
+            display: inline-block;
+            margin-top: 10px;
+            color: #2196f3;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .link:hover {
+            text-decoration: underline;
+        }
+        
+        .metamask-btn {
+            margin-top: 15px;
+            background: linear-gradient(135deg, #f6851b 0%, #e2761b 100%);
+        }
+        
+        .info-box {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ ARY Quick Test</h1>
+        <p class="subtitle">Prueba rápida del sistema de recompensas</p>
+        
+        <div class="input-group">
+            <label>Tu Wallet de MetaMask</label>
+            <input 
+                type="text" 
+                id="wallet" 
+                placeholder="0x..."
+                pattern="^0x[a-fA-F0-9]{40}$"
+            >
+        </div>
+        
+        <button id="sendBtn" onclick="sendReward()">
+            🎁 Recibir 5 ARY Gratis
+        </button>
+        
+        <button class="metamask-btn" onclick="connectMetaMask()">
+            🦊 Conectar con MetaMask
+        </button>
+        
+        <div id="status" class="status"></div>
+        
+        <div class="info-box">
+            💡 <strong>Tip:</strong> Puedes conectar MetaMask para rellenar automáticamente tu dirección, o simplemente copiarla y pegarla manualmente.
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3001/api';
+        
+        // Conectar MetaMask
+        async function connectMetaMask() {
+            if (!window.ethereum) {
+                showStatus('error', '❌ MetaMask no está instalado. <a href="https://metamask.io" target="_blank">Descárgalo aquí</a>');
+                return;
+            }
+            
+            try {
+                showStatus('loading', '🔄 Conectando MetaMask...');
+                
+                const accounts = await window.ethereum.request({ 
+                    method: 'eth_requestAccounts' 
+                });
+                
+                const wallet = accounts[0];
+                document.getElementById('wallet').value = wallet;
+                
+                showStatus('success', `✅ Conectado: ${wallet}`);
+            } catch (error) {
+                showStatus('error', '❌ Error al conectar MetaMask: ' + error.message);
+            }
+        }
+        
+        // Enviar recompensa
+        async function sendReward() {
+            const walletInput = document.getElementById('wallet');
+            const wallet = walletInput.value.trim();
+            const btn = document.getElementById('sendBtn');
+            
+            // Validar
+            if (!wallet) {
+                showStatus('error', '❌ Por favor ingresa una dirección de wallet');
+                return;
+            }
+            
+            if (!wallet.match(/^0x[a-fA-F0-9]{40}$/)) {
+                showStatus('error', '❌ Dirección de wallet inválida');
+                return;
+            }
+            
+            // Deshabilitar botón
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Enviando...';
+            
+            showStatus('loading', '⏳ Enviando recompensa a la blockchain...');
+            
+            try {
+                const response = await fetch(`${API_URL}/quick-reward`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ walletAddress: wallet })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showSuccessResult(data);
+                } else {
+                    showStatus('error', '❌ ' + data.error);
+                }
+                
+            } catch (error) {
+                showStatus('error', '❌ Error de conexión: ' + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '🎁 Recibir 5 ARY Gratis';
+            }
+        }
+        
+        // Mostrar estado
+        function showStatus(type, message) {
+            const status = document.getElementById('status');
+            status.className = `status ${type} show`;
+            status.innerHTML = message;
+        }
+        
+        // Mostrar resultado exitoso
+        function showSuccessResult(data) {
+            const html = `
+                <strong>✅ ¡Recompensa enviada exitosamente!</strong>
+                <div class="details">
+                    <p><strong>Cantidad:</strong> ${data.details.amount}</p>
+                    <p><strong>Destinatario:</strong></p>
+                    <div class="hash">${data.details.recipient}</div>
+                    <p><strong>Hash de transacción:</strong></p>
+                    <div class="hash">${data.details.txHash}</div>
+                    <p><strong>Bloque:</strong> #${data.details.blockNumber}</p>
+                    <a href="${data.details.explorerUrl}" target="_blank" class="link">
+                        🔍 Ver en Etherscan
+                    </a>
+                </div>
+            `;
+            
+            showStatus('success', html);
+            
+            // Mostrar instrucciones para ver en MetaMask
+            setTimeout(() => {
+                if (confirm('¿Quieres ver cómo añadir ARY a MetaMask?')) {
+                    alert(
+                        'Para ver tus ARY en MetaMask:\n\n' +
+                        '1. Abre MetaMask\n' +
+                        '2. Ve a "Assets" → "Import tokens"\n' +
+                        '3. Pega esta dirección:\n' +
+                        '   0x3efbce682b32f495b4912f3866ce69da1a2d7e5c\n' +
+                        '4. Symbol: ARY\n' +
+                        '5. Decimals: 18\n\n' +
+                        '¡Listo! Verás tus 5 ARY tokens.'
+                    );
+                }
+            }, 1000);
+        }
+        
+        // Detectar Enter
+        document.getElementById('wallet').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendReward();
+            }
+        });
+    </script>
+</body>
+</html>

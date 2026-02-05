@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Borcelle | Sistema de Recompensas ARY</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #1f1f1f, #000000);
+            border-radius: 15px;
+            border: 1px solid #2a2a2a;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #f4c430, #ffdb58);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: #cccccc;
+            font-size: 1.1rem;
+        }
+
+        .card {
+            background: #1c1c1c;
+            border: 1px solid #2a2a2a;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+        }
+
+        .card h2 {
+            color: #f4c430;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #cccccc;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            background: #0f0f0f;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #f4c430;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #f4c430, #ffdb58);
+            color: #000;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(244, 196, 48, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #2a2a2a, #1f1f1f);
+            color: #ffffff;
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            display: none;
+        }
+
+        .status.success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4CAF50;
+            color: #81C784;
+            display: block;
+        }
+
+        .status.error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid #f44336;
+            color: #E57373;
+            display: block;
+        }
+
+        .status.info {
+            background: rgba(33, 150, 243, 0.2);
+            border: 1px solid #2196F3;
+            color: #64B5F6;
+            display: block;
+        }
+
+        .wallet-info {
+            background: #0f0f0f;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #2a2a2a;
+            margin-top: 15px;
+        }
+
+        .wallet-info p {
+            margin: 8px 0;
+            color: #cccccc;
+        }
+
+        .wallet-info strong {
+            color: #f4c430;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #1c1c1c;
+            border: 2px solid #f4c430;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 400px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            animation: slideIn 0.3s ease-out;
+            z-index: 1000;
+            display: none;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .notification.show {
+            display: block;
+        }
+
+        .notification-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .notification-icon {
+            font-size: 2rem;
+            margin-right: 15px;
+        }
+
+        .notification-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #f4c430;
+        }
+
+        .notification-body {
+            color: #cccccc;
+        }
+
+        .notification-body p {
+            margin: 8px 0;
+            word-break: break-all;
+        }
+
+        .notification-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: auto;
+            padding: 5px 10px;
+        }
+
+        .link {
+            color: #64B5F6;
+            text-decoration: none;
+            word-break: break-all;
+        }
+
+        .link:hover {
+            text-decoration: underline;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #2a2a2a;
+            color: #888;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-weight: bold;
+            border: 2px solid #2a2a2a;
+        }
+
+        .step.active .step-number {
+            background: #f4c430;
+            color: #000;
+            border-color: #f4c430;
+        }
+
+        .step.completed .step-number {
+            background: #4CAF50;
+            color: #fff;
+            border-color: #4CAF50;
+        }
+
+        .step-label {
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        .step.active .step-label,
+        .step.completed .step-label {
+            color: #fff;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .notification {
+                max-width: calc(100% - 40px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💎 Borcelle Rewards</h1>
+            <p>Gana ARY tokens automáticamente con cada compra</p>
+        </div>
+
+        <!-- Indicador de pasos -->
+        <div class="step-indicator">
+            <div class="step active" id="step1">
+                <div class="step-number">1</div>
+                <div class="step-label">Registrar</div>
+            </div>
+            <div class="step" id="step2">
+                <div class="step-number">2</div>
+                <div class="step-label">Comprar</div>
+            </div>
+            <div class="step" id="step3">
+                <div class="step-number">3</div>
+                <div class="step-label">Recibir ARY</div>
+            </div>
+        </div>
+
+        <!-- PASO 1: Registro -->
+        <div class="card" id="registerCard">
+            <h2>📝 Paso 1: Registra tu Wallet</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="name">Nombre (opcional)</label>
+                    <input type="text" id="name" placeholder="Tu nombre">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email (opcional)</label>
+                    <input type="email" id="email" placeholder="tu@email.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="walletAddress">Dirección de Wallet *</label>
+                    <input 
+                        type="text" 
+                        id="walletAddress" 
+                        placeholder="0x..." 
+                        required
+                        pattern="^0x[a-fA-F0-9]{40}$"
+                    >
+                    <small style="color: #888; font-size: 0.85rem;">
+                        Esta es tu dirección de MetaMask donde recibirás los ARY tokens
+                    </small>
+                </div>
+                
+                <button type="submit" class="btn" id="registerBtn">
+                    Registrar Wallet
+                </button>
+            </form>
+            
+            <div id="registerStatus" class="status"></div>
+        </div>
+
+        <!-- PASO 2: Simulación de compra -->
+        <div class="card hidden" id="purchaseCard">
+            <h2>🛍️ Paso 2: Simula una Compra</h2>
+            
+            <div class="wallet-info">
+                <p><strong>Wallet registrada:</strong></p>
+                <p id="registeredWallet" style="font-family: monospace; font-size: 0.9rem;"></p>
+            </div>
+            
+            <form id="purchaseForm">
+                <div class="form-group">
+                    <label for="purchaseAmount">Monto de compra (USD)</label>
+                    <input 
+                        type="number" 
+                        id="purchaseAmount" 
+                        placeholder="100.00" 
+                        step="0.01"
+                        min="0"
+                    >
+                </div>
+                
+                <button type="submit" class="btn" id="purchaseBtn">
+                    💰 Realizar Compra y Recibir 5 ARY
+                </button>
+            </form>
+            
+            <div id="purchaseStatus" class="status"></div>
+            
+            <button class="btn btn-secondary" id="newWalletBtn" style="margin-top: 15px;">
+                Registrar otra wallet
+            </button>
+        </div>
+
+        <!-- PASO 3: Confirmación -->
+        <div class="card hidden" id="rewardCard">
+            <h2>🎉 ¡Recompensa Recibida!</h2>
+            <div id="rewardDetails"></div>
+        </div>
+    </div>
+
+    <!-- Notificación flotante -->
+    <div class="notification" id="notification">
+        <button class="notification-close" onclick="closeNotification()">×</button>
+        <div class="notification-header">
+            <div class="notification-icon">🎁</div>
+            <div class="notification-title">¡Recompensa Enviada!</div>
+        </div>
+        <div class="notification-body" id="notificationBody"></div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        let currentWallet = '';
+
+        // Elementos del DOM
+        const registerForm = document.getElementById('registerForm');
+        const purchaseForm = document.getElementById('purchaseForm');
+        const registerCard = document.getElementById('registerCard');
+        const purchaseCard = document.getElementById('purchaseCard');
+        const rewardCard = document.getElementById('rewardCard');
+        const registerStatus = document.getElementById('registerStatus');
+        const purchaseStatus = document.getElementById('purchaseStatus');
+        const registeredWallet = document.getElementById('registeredWallet');
+        const notification = document.getElementById('notification');
+        const notificationBody = document.getElementById('notificationBody');
+
+        // Paso 1: Registrar wallet
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const walletAddress = document.getElementById('walletAddress').value.trim();
+            
+            showStatus(registerStatus, 'Registrando wallet...', 'info');
+            
+            try {
+                const response = await fetch(`${API_URL}/register-wallet`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, walletAddress })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentWallet = walletAddress;
+                    registeredWallet.textContent = walletAddress;
+                    
+                    showStatus(registerStatus, '✅ ' + data.message, 'success');
+                    
+                    // Cambiar al siguiente paso
+                    setTimeout(() => {
+                        registerCard.classList.add('hidden');
+                        purchaseCard.classList.remove('hidden');
+                        updateSteps(2);
+                    }, 1500);
+                } else {
+                    showStatus(registerStatus, '❌ ' + data.error, 'error');
+                }
+            } catch (error) {
+                showStatus(registerStatus, '❌ Error de conexión con el servidor', 'error');
+                console.error(error);
+            }
+        });
+
+        // Paso 2: Simular compra y enviar recompensa
+        purchaseForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const purchaseAmount = document.getElementById('purchaseAmount').value;
+            const purchaseId = 'PURCHASE-' + Date.now();
+            
+            showStatus(purchaseStatus, '💳 Procesando compra...', 'info');
+            updateSteps(3);
+            
+            try {
+                const response = await fetch(`${API_URL}/send-reward`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        walletAddress: currentWallet,
+                        purchaseId,
+                        purchaseAmount: purchaseAmount || '0'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showStatus(purchaseStatus, '✅ ' + data.message, 'success');
+                    
+                    // Mostrar notificación
+                    showNotification(data.reward, data.customerStats);
+                    
+                    // Mostrar detalles de la recompensa
+                    showRewardDetails(data);
+                    
+                } else {
+                    showStatus(purchaseStatus, '❌ ' + data.error, 'error');
+                }
+            } catch (error) {
+                showStatus(purchaseStatus, '❌ Error de conexión con el servidor', 'error');
+                console.error(error);
+            }
+        });
+
+        // Botón para registrar nueva wallet
+        document.getElementById('newWalletBtn').addEventListener('click', () => {
+            registerForm.reset();
+            registerCard.classList.remove('hidden');
+            purchaseCard.classList.add('hidden');
+            rewardCard.classList.add('hidden');
+            registerStatus.classList.remove('success', 'error', 'info');
+            purchaseStatus.classList.remove('success', 'error', 'info');
+            updateSteps(1);
+        });
+
+        // Funciones auxiliares
+        function showStatus(element, message, type) {
+            element.textContent = message;
+            element.className = `status ${type}`;
+        }
+
+        function updateSteps(activeStep) {
+            for (let i = 1; i <= 3; i++) {
+                const step = document.getElementById(`step${i}`);
+                step.classList.remove('active', 'completed');
+                
+                if (i < activeStep) {
+                    step.classList.add('completed');
+                } else if (i === activeStep) {
+                    step.classList.add('active');
+                }
+            }
+        }
+
+        function showNotification(reward, stats) {
+            notificationBody.innerHTML = `
+                <p><strong>Cantidad:</strong> ${reward.amount}</p>
+                <p><strong>Destinatario:</strong></p>
+                <p style="font-size: 0.85rem; font-family: monospace;">${reward.recipient}</p>
+                <p><strong>Hash de transacción:</strong></p>
+                <p><a href="${reward.explorerUrl}" target="_blank" class="link">${reward.txHash}</a></p>
+                <hr style="border: none; border-top: 1px solid #2a2a2a; margin: 15px 0;">
+                <p><strong>Total de compras:</strong> ${stats.totalPurchases}</p>
+                <p><strong>Total de recompensas:</strong> ${stats.totalRewards}</p>
+            `;
+            
+            notification.classList.add('show');
+            
+            // Auto-cerrar después de 10 segundos
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 10000);
+        }
+
+        function closeNotification() {
+            notification.classList.remove('show');
+        }
+
+        function showRewardDetails(data) {
+            const details = `
+                <div class="wallet-info">
+                    <p><strong>✅ Recompensa enviada exitosamente</strong></p>
+                    <p><strong>Cantidad:</strong> ${data.reward.amount}</p>
+                    <p><strong>Destinatario:</strong> ${data.reward.recipient}</p>
+                    <p><strong>Hash:</strong> 
+                        <a href="${data.reward.explorerUrl}" target="_blank" class="link">
+                            Ver en Etherscan
+                        </a>
+                    </p>
+                    <hr style="border: none; border-top: 1px solid #2a2a2a; margin: 15px 0;">
+                    <p><strong>Tus estadísticas:</strong></p>
+                    <p>📊 Total de compras: ${data.customerStats.totalPurchases}</p>
+                    <p>💎 Total de recompensas acumuladas: ${data.customerStats.totalRewards}</p>
+                </div>
+            `;
+            
+            document.getElementById('rewardDetails').innerHTML = details;
+            rewardCard.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
