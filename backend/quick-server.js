@@ -12,7 +12,7 @@ const cors = require('cors');
 const { ethers } = require('ethers');
 
 const app = express();
-const PORT = 3001; // Puerto diferente para no interferir con el servidor principal
+const PORT = process.env.PORT || 3000; // Puerto diferente para no interferir con el servidor principal
 
 app.use(cors());
 app.use(express.json());
